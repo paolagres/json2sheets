@@ -1,2 +1,2 @@
-export * from './querier'
+export * from './client'
 export * from './types'

@@ -19,5 +19,21 @@
   },
   "dependencies": {
     "googleapis": "^140.0.0"
-  }
+  },
+  "version": "1.0.0",
+  "directories": {
+    "lib": "lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "@paolagres/json2sheets"
+  },
+  "keywords": [
+    "google-sheets",
+    "google-sheets-api",
+    "json-to-sheets",
+    "json2sheets",
+    "json"
+  ],
+  "author": "Paola Grès"
 }
