@@ -34,9 +34,12 @@ You can get the header and rows data using the `getHeader` and `getRows` methods
 const client = new SheetsClient('<spreadsheetId>', '<sheetId>')
 
 client.getHeader()
-// ['Name', 'Date', 'Status', 'Link']
+// Returns the header row from the sheet
+// Example output : ['Name', 'Date', 'Status', 'Link']
 
 client.getRows()
+// Returns all rows from the sheet as an array of objects with keys corresponding to the header row
+// Example output :
 // [
 //     {
 //         Name: 'Send email',
@@ -54,17 +57,29 @@ All `batchUpdate` requests are queued and need to be sent using `commit()`
 ```typescript
 const client = new SheetsClient('<spreadsheetId>', '<sheetId>')
 
+// Sets the sheet header row and uses it for data keys
+// Compares provided header with existing and adds, deletes and updates columns
 client.setHeader(['Name', 'Date', 'Status', 'Link'])
+
+// Updates data in the specified row with the provided data
 client.updateRow(2, { Name: 'Send email', Date: '2023-03-02T13:07:00.000Z', Status: 'Done' })
+
+// Adds a new row with provided data at the end of the sheet
 client.addRow({ Name: 'Send email', Date: '2023-03-02T13:07:00.000Z', Status: 'Done' })
+
+// Adds a new column at the end of the sheet
+client.addColumn()
+
+// Deletes the specified row or column from the sheet
 client.deleteRow(2)
 client.deleteColumn(2)
 
+// Deletes the specified rows or columns from the sheet
 // Multiple rows or columns are deleted in descending index order
 client.deleteRows([2, 4])
 client.deleteColumns([2, 4])
 
-// Send request
+// Sends request
 client.commit()
 ```
 
@@ -73,6 +88,7 @@ client.commit()
 ```typescript
 const client = new SheetsClient('<spreadsheetId>', '<sheetId>')
 
+// Clears all the data from the sheet
 client.clearSheet()
 ```
 
