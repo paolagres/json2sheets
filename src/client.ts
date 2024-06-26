@@ -21,7 +21,7 @@ export class SheetsClient extends google.sheets_v4.Sheets {
       spreadsheetId: this.spreadsheetId,
       requestBody: { dataFilters: [{ gridRange: { sheetId: this.sheetId, endRowIndex: 1 } }], includeGridData: true },
     })
-    const data = response.data.sheets?.[0]?.data?.[0]?.rowData?.[0]?.values?.map(value => getValueFromExtended(value) ?? '') as string[]
+    const data = response.data.sheets?.[0]?.data?.[0]?.rowData?.[0]?.values?.map(value => getValueFromCell(value) ?? '') as string[]
     return data ?? []
   }
 
@@ -53,7 +53,7 @@ export class SheetsClient extends google.sheets_v4.Sheets {
       const values = row.values
       if (!values) return
       let sheetRow: SheetRow = {}
-      this.header.forEach((title, index) => (sheetRow[title] = getValueFromExtended(values[index])))
+      this.header.forEach((title, index) => (sheetRow[title] = getValueFromCell(values[index])))
       rows.push(sheetRow)
     })
     return rows
