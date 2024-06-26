@@ -24,10 +24,7 @@
   "directories": {
     "lib": "lib"
   },
-  "repository": {
-    "type": "git",
-    "url": "@paolagres/json2sheets"
-  },
+  "repository": "https://github.com/paolagres/json2sheets",
   "keywords": [
     "google-sheets",
     "google-sheets-api",
