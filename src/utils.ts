@@ -1,7 +1,7 @@
 import { sheets_v4 } from 'googleapis'
 import { SheetCellValue, SheetRow } from './types'
 
-export function getValuesForRow(row: SheetRow, header: string[]) {
+export function formatRowValues(row: SheetRow, header: string[]): sheets_v4.Schema$CellData[] {
   const values: sheets_v4.Schema$CellData[] = []
   for (const title of header) {
     const value = row[title]
@@ -25,7 +25,7 @@ export function getValuesForRow(row: SheetRow, header: string[]) {
   return values
 }
 
-export function getValueFromExtended(value?: sheets_v4.Schema$CellData): SheetCellValue {
+export function getValueFromCell(value?: sheets_v4.Schema$CellData): SheetCellValue {
   if (value?.hyperlink) return { text: value.effectiveValue?.stringValue ?? '', url: value.hyperlink }
   if (value?.effectiveFormat?.numberFormat?.type === 'DATE' && value.effectiveValue?.numberValue)
     return getDateFromNumber(value.effectiveValue.numberValue)
