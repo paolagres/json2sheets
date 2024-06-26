@@ -1,7 +1,7 @@
 import { sheets_v4 } from 'googleapis'
 import { SheetCellValue, SheetRow } from './types'
 
-export function getValuesForRow(row: SheetRow, header: string[]): sheets_v4.Schema$CellData[] {
+export function formatRowValues(row: SheetRow, header: string[]): sheets_v4.Schema$CellData[] {
   const values: sheets_v4.Schema$CellData[] = []
   for (const title of header) {
     const value = row[title]

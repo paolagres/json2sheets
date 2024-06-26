@@ -31,7 +31,7 @@ The class is initialized with the `spreadsheetId`, the `sheetId` and an optional
 You can get the header and rows data using the `getHeader` and `getRows` methods.
 
 ```typescript
-const client = new SheetsClient('<spreadsheetId>', '<sheetId>')
+const client = new SheetsClient('spreadsheetId', 'sheetId')
 
 client.getHeader()
 // Returns the header row from the sheet
@@ -55,7 +55,7 @@ client.getRows()
 All `batchUpdate` requests are queued and need to be sent using `commit()`
 
 ```typescript
-const client = new SheetsClient('<spreadsheetId>', '<sheetId>')
+const client = new SheetsClient('spreadsheetId', 'sheetId')
 
 // Sets the sheet header row and uses it for data keys
 // Compares provided header with existing and adds, deletes and updates columns
@@ -64,11 +64,11 @@ client.setHeader(['Name', 'Date', 'Status', 'Link'])
 // Updates data in the specified row with the provided data
 client.updateRow(2, { Name: 'Send email', Date: '2023-03-02T13:07:00.000Z', Status: 'Done' })
 
-// Adds a new row with provided data at the end of the sheet
-client.addRow({ Name: 'Send email', Date: '2023-03-02T13:07:00.000Z', Status: 'Done' })
+// Adds new rows with provided data at the end of the sheet
+client.addRows([{ Name: 'Send email', Date: '2023-03-02T13:07:00.000Z', Status: 'Done' }])
 
-// Adds a new column at the end of the sheet
-client.addColumn()
+// Adds the provided number of columns at the end of the sheet
+client.addColumns(2)
 
 // Deletes the specified row or column from the sheet
 client.deleteRow(2)
@@ -86,7 +86,7 @@ client.commit()
 ### Clearing data
 
 ```typescript
-const client = new SheetsClient('<spreadsheetId>', '<sheetId>')
+const client = new SheetsClient('spreadsheetId', 'sheetId')
 
 // Clears all the data from the sheet
 client.clearSheet()

@@ -1,6 +1,6 @@
 import * as google from 'googleapis'
 import { SheetRow } from './types'
-import { getValuesForRow, getValueFromCell } from './utils'
+import { formatRowValues, getValueFromCell } from './utils'
 
 export class SheetsClient extends google.sheets_v4.Sheets {
   requests: google.sheets_v4.Schema$Request[] = []
@@ -34,7 +34,7 @@ export class SheetsClient extends google.sheets_v4.Sheets {
     if (columnsToDelete.length > 0) this.deleteColumns(columnsToDelete.map(column => existingHeader.indexOf(column)))
 
     const columnsToAdd = header.filter(title => !existingHeader.includes(title))
-    columnsToAdd.forEach(_ => this.addColumn())
+    this.addColumns(columnsToAdd.length)
 
     const newHeader = [...existingHeader.filter(title => header.includes(title)), ...columnsToAdd]
 
@@ -87,7 +87,7 @@ export class SheetsClient extends google.sheets_v4.Sheets {
         },
         rows: [
           {
-            values: getValuesForRow(row, header),
+            values: formatRowValues(row, header),
           },
         ],
         fields: '*',
@@ -95,16 +95,14 @@ export class SheetsClient extends google.sheets_v4.Sheets {
     })
   }
 
-  async addRow(row: SheetRow) {
+  async addRows(rows: SheetRow[]) {
     const header = await this.getHeader()
     this.requests.push({
       appendCells: {
         sheetId: this.sheetId,
-        rows: [
-          {
-            values: getValuesForRow(row, header),
-          },
-        ],
+        rows: rows.map(row => ({
+          values: formatRowValues(row, header),
+        })),
         fields: '*',
       },
     })
@@ -127,12 +125,12 @@ export class SheetsClient extends google.sheets_v4.Sheets {
     indexes.sort((i1, i2) => i2 - i1).forEach(index => this.deleteRow(index))
   }
 
-  addColumn() {
+  addColumns(count: number) {
     this.requests.push({
       appendDimension: {
         sheetId: this.sheetId,
         dimension: 'COLUMNS',
-        length: 1,
+        length: count,
       },
     })
   }
