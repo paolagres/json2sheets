@@ -18,6 +18,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
+    "date-fns": "^3.6.0",
     "googleapis": "^140.0.0"
   },
   "version": "1.1.0",

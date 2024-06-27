@@ -1,5 +1,6 @@
 import { sheets_v4 } from 'googleapis'
 import { SheetCellValue, SheetRow } from './types'
+import { roundToNearestMinutes } from 'date-fns'
 
 export function formatRowValues(row: SheetRow, header: string[]): sheets_v4.Schema$CellData[] {
   const values: sheets_v4.Schema$CellData[] = []
@@ -37,5 +38,5 @@ export function getNumberDate(date: Date) {
 }
 
 export function getDateFromNumber(numberDate: number) {
-  return new Date((numberDate - 25569) * (24 * 60 * 60 * 1000))
+  return roundToNearestMinutes(new Date((numberDate - 25569) * (24 * 60 * 60 * 1000)))
 }
