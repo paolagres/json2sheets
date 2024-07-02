@@ -161,7 +161,13 @@ export class SheetsClient extends google.sheets_v4.Sheets {
     })
   }
 
-  commit() {
-    return this.spreadsheets.batchUpdate({ spreadsheetId: this.spreadsheetId, requestBody: { requests: this.requests } })
+  async commit() {
+    const chunkSize = 100
+    for (let i = 0; i < Math.ceil(this.requests.length / chunkSize); i++) {
+      const chunk = this.requests.slice(i * chunkSize, (i + 1) * chunkSize)
+      await this.spreadsheets.batchUpdate({ spreadsheetId: this.spreadsheetId, requestBody: { requests: chunk } })
+    }
+    this.requests = []
+    return
   }
 }
