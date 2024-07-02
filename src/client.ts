@@ -30,11 +30,11 @@ export class SheetsClient extends google.sheets_v4.Sheets {
   async setHeader(header: string[]) {
     const existingHeader = await this.getHeader()
 
-    const columnsToDelete = existingHeader.filter(title => !header.includes(title))
+    const columnsToDelete = existingHeader.filter(title => title && !header.includes(title))
     if (columnsToDelete.length > 0) this.deleteColumns(columnsToDelete.map(column => existingHeader.indexOf(column)))
 
     const columnsToAdd = header.filter(title => !existingHeader.includes(title))
-    this.addColumns(columnsToAdd.length)
+    if (columnsToAdd.length > 0) this.addColumns(columnsToAdd.length)
 
     const newHeader = [...existingHeader.filter(title => header.includes(title)), ...columnsToAdd]
 
