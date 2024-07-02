@@ -30,11 +30,11 @@ export class SheetsClient extends google.sheets_v4.Sheets {
   async setHeader(header: string[]) {
     const existingHeader = await this.getHeader()
 
-    const columnsToDelete = existingHeader.filter(title => !header.includes(title))
+    const columnsToDelete = existingHeader.filter(title => title && !header.includes(title))
     if (columnsToDelete.length > 0) this.deleteColumns(columnsToDelete.map(column => existingHeader.indexOf(column)))
 
     const columnsToAdd = header.filter(title => !existingHeader.includes(title))
-    this.addColumns(columnsToAdd.length)
+    if (columnsToAdd.length > 0) this.addColumns(columnsToAdd.length)
 
     const newHeader = [...existingHeader.filter(title => header.includes(title)), ...columnsToAdd]
 
@@ -54,7 +54,7 @@ export class SheetsClient extends google.sheets_v4.Sheets {
             })),
           },
         ],
-        fields: '*',
+        fields: 'userEnteredValue,userEnteredFormat',
       },
     })
   }
@@ -90,7 +90,7 @@ export class SheetsClient extends google.sheets_v4.Sheets {
             values: formatRowValues(row, header),
           },
         ],
-        fields: '*',
+        fields: 'userEnteredValue,userEnteredFormat,textFormatRuns',
       },
     })
   }
@@ -103,7 +103,7 @@ export class SheetsClient extends google.sheets_v4.Sheets {
         rows: rows.map(row => ({
           values: formatRowValues(row, header),
         })),
-        fields: '*',
+        fields: 'userEnteredValue,userEnteredFormat,textFormatRuns',
       },
     })
   }
@@ -161,7 +161,13 @@ export class SheetsClient extends google.sheets_v4.Sheets {
     })
   }
 
-  commit() {
-    return this.spreadsheets.batchUpdate({ spreadsheetId: this.spreadsheetId, requestBody: { requests: this.requests } })
+  async commit() {
+    const chunkSize = 100
+    for (let i = 0; i < Math.ceil(this.requests.length / chunkSize); i++) {
+      const chunk = this.requests.slice(i * chunkSize, (i + 1) * chunkSize)
+      await this.spreadsheets.batchUpdate({ spreadsheetId: this.spreadsheetId, requestBody: { requests: chunk } })
+    }
+    this.requests = []
+    return
   }
 }

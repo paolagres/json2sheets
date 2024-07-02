@@ -19,7 +19,7 @@ export function formatRowValues(row: SheetRow, header: string[]): sheets_v4.Sche
     else if (value?.url)
       values.push({
         userEnteredValue: { stringValue: value.text },
-        textFormatRuns: [{ format: { link: { uri: value.url } } }],
+        textFormatRuns: [{ startIndex: 0, format: { link: { uri: value.url } } }],
       })
     else values.push({ userEnteredValue: { stringValue: '' } })
   }
