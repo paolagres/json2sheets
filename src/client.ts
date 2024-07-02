@@ -54,7 +54,7 @@ export class SheetsClient extends google.sheets_v4.Sheets {
             })),
           },
         ],
-        fields: '*',
+        fields: 'userEnteredValue,userEnteredFormat',
       },
     })
   }
@@ -90,7 +90,7 @@ export class SheetsClient extends google.sheets_v4.Sheets {
             values: formatRowValues(row, header),
           },
         ],
-        fields: '*',
+        fields: 'userEnteredValue,userEnteredFormat,textFormatRuns',
       },
     })
   }
@@ -103,7 +103,7 @@ export class SheetsClient extends google.sheets_v4.Sheets {
         rows: rows.map(row => ({
           values: formatRowValues(row, header),
         })),
-        fields: '*',
+        fields: 'userEnteredValue,userEnteredFormat,textFormatRuns',
       },
     })
   }
