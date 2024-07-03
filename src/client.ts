@@ -6,6 +6,9 @@ export class SheetsClient extends google.sheets_v4.Sheets {
   requests: google.sheets_v4.Schema$Request[] = []
   header?: string[]
 
+  static queriedFields = 'sheets.data.rowData.values(effectiveValue,effectiveFormat.numberFormat,hyperlink)'
+  static updatedFields = 'userEnteredValue,userEnteredFormat.numberFormat,textFormatRuns'
+
   constructor(private spreadsheetId: string, private sheetId: number) {
     const auth = new google.Auth.JWT({
       email: process.env.GOOGLE_ACCOUNT_EMAIL,
@@ -20,6 +23,7 @@ export class SheetsClient extends google.sheets_v4.Sheets {
       const response = await this.spreadsheets.getByDataFilter({
         spreadsheetId: this.spreadsheetId,
         requestBody: { dataFilters: [{ gridRange: { sheetId: this.sheetId, endRowIndex: 1 } }], includeGridData: true },
+        fields: SheetsClient.queriedFields,
       })
       const data = response.data.sheets?.[0]?.data?.[0]?.rowData?.[0]?.values?.map(value => getValueFromCell(value) ?? '') as string[]
       this.header = data ?? []
@@ -54,7 +58,7 @@ export class SheetsClient extends google.sheets_v4.Sheets {
             })),
           },
         ],
-        fields: 'userEnteredValue,userEnteredFormat',
+        fields: SheetsClient.updatedFields,
       },
     })
   }
@@ -65,6 +69,7 @@ export class SheetsClient extends google.sheets_v4.Sheets {
     const response = await this.spreadsheets.getByDataFilter({
       spreadsheetId: this.spreadsheetId,
       requestBody: { dataFilters: [{ gridRange: { sheetId: this.sheetId, startRowIndex: 1 } }], includeGridData: true },
+      fields: SheetsClient.queriedFields,
     })
     response.data.sheets?.[0]?.data?.[0]?.rowData?.forEach(row => {
       const values = row.values
@@ -90,7 +95,7 @@ export class SheetsClient extends google.sheets_v4.Sheets {
             values: formatRowValues(row, header),
           },
         ],
-        fields: 'userEnteredValue,userEnteredFormat,textFormatRuns',
+        fields: SheetsClient.updatedFields,
       },
     })
   }
@@ -103,7 +108,7 @@ export class SheetsClient extends google.sheets_v4.Sheets {
         rows: rows.map(row => ({
           values: formatRowValues(row, header),
         })),
-        fields: 'userEnteredValue,userEnteredFormat,textFormatRuns',
+        fields: SheetsClient.updatedFields,
       },
     })
   }
